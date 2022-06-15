@@ -46,7 +46,7 @@ class Yatzy
 
   def self.groups_of_numbers(dice, number_of_repeats)
     repeated_number = dice.sort.reverse.detect { |i| dice.count(i) >= number_of_repeats}
-    repeated_number * number_of_repeats
+    repeated_number != nil ? repeated_number * number_of_repeats : 0
   end
 
   def self.score_pair(dice)
@@ -60,73 +60,24 @@ class Yatzy
   def self.four_of_a_kind(dice)
     groups_of_numbers(dice, 4)
   end 
-def self.two_pair(dice)
-  low_pair = dice.sort.detect { |i| dice.count(i) >= 2}
-  high_pair = dice.sort.reverse.detect { |i| dice.count(i) >= 2}
-  high_pair != low_pair ? (high_pair + low_pair) * 2 : 0
-end
 
+  def self.two_pair(dice)
+    low_pair = dice.sort.detect { |i| dice.count(i) >= 2}
+    high_pair = dice.sort.reverse.detect { |i| dice.count(i) >= 2}
+    high_pair != low_pair ? (high_pair + low_pair) * 2 : 0
+  end
     
-  def self.smallStraight( d1,  d2,  d3,  d4,  d5)
-    tallies = [0]*6
-    tallies[d1-1] += 1 #roll a four -> tallies[4-1] = tallies[3] -> count of fours[0, 0, 0, 1, 0, 0]
-    tallies[d2-1] += 1 #roll another 4 -> tallies[4-1] = tallies[3] -> count of fours [0, 0, 0, 2, 0, 0]
-    tallies[d3-1] += 1
-    tallies[d4-1] += 1
-    tallies[d5-1] += 1
-    (tallies[0] == 1 and
-      tallies[1] == 1 and
-      tallies[2] == 1 and
-      tallies[3] == 1 and
-      tallies[4] == 1) ? 15 : 0
+  def self.smallStraight(dice)
+    dice.sort == [1,2,3,4,5] ? 15 : 0
   end
 
-  def self.largeStraight( d1,  d2,  d3,  d4,  d5)
-    tallies = [0]*6
-    tallies[d1-1] += 1
-    tallies[d2-1] += 1
-    tallies[d3-1] += 1
-    tallies[d4-1] += 1
-    tallies[d5-1] += 1
-    if (tallies[1] == 1 and tallies[2] == 1 and tallies[3] == 1 and tallies[4] == 1 and tallies[5] == 1)
-      return 20
-    end
-    return 0
+  def self.largeStraight(dice)
+    dice.sort == [2,3,4,5,6] ? 20 : 0
   end
 
-  def self.fullHouse( d1,  d2,  d3,  d4,  d5)
-    tallies = []
-    _2 = false
-    i = 0
-    _2_at = 0
-    _3 = false
-    _3_at = 0
-
-    tallies = [0]*6
-    tallies[d1-1] += 1
-    tallies[d2-1] += 1
-    tallies[d3-1] += 1
-    tallies[d4-1] += 1
-    tallies[d5-1] += 1
-
-    for i in Array 0..5
-      if (tallies[i] == 2)
-        _2 = true
-        _2_at = i+1
-      end
-    end
-
-    for i in Array 0..5
-      if (tallies[i] == 3)
-        _3 = true
-        _3_at = i+1
-      end
-    end
-
-    if (_2 and _3)
-      return _2_at * 2 + _3_at * 3
-    else
-      return 0
-    end
+  def self.fullHouse(dice)
+    pair = groups_of_numbers(dice, 2)
+    triple = groups_of_numbers(dice, 3)
+    pair > 0 && triple > 0 ? pair + triple : 0
   end
 end
